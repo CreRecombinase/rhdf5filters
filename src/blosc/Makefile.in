@@ -1,12 +1,11 @@
-
-BLOSC_OBJS=	lib/blosc-1.16.3/bitshuffle-avx2.o \
+BLOSC_OBJS=	@AVX2_OBJ_PATH@@AVX2_BITSHUFFLE_OBJ@ \
 			lib/blosc-1.16.3/blosc.o \
-			lib/blosc-1.16.3/shuffle-avx2.o \
-			lib/blosc-1.16.3/shuffle-sse2.o \
+			@AVX2_OBJ_PATH@@AVX2_SHUFFLE_OBJ@ \
+			@SSE2_OBJ_PATH@@SSE2_SHUFFLE_OBJ@ \
 			lib/blosc-1.16.3/bitshuffle-generic.o \
 			lib/blosc-1.16.3/blosclz.o \
 			lib/blosc-1.16.3/shuffle.o \
-			lib/blosc-1.16.3/bitshuffle-sse2.o \
+			@SSE2_OBJ_PATH@@SSE2_BITSHUFFLE_OBJ@ \
 			lib/blosc-1.16.3/fastcopy.o \
 			lib/blosc-1.16.3/shuffle-generic.o
 
@@ -27,11 +26,13 @@ ZSTD_OBJS   := $(patsubst %.c,%.o,$(ZSTD_FILES))
 
 all: libH5Zblosc.so
 
-libH5Zblosc.so:	libblosc.a
-	$(CXX) $(PKG_CXXFLAGS) $(PKG_CPICFLAGS) -shared -o libH5Zblosc.so H5Zblosc.c \
-			$(PKG_CPPFLAGS) -I./lib/blosc-1.16.3 \
-			libblosc.a \
-		  -lz
+libH5Zblosc.so:	H5Zblosc.o
+	$(CXX) $(PKG_CXXFLAGS) $(PKG_CXXPICFLAGS) -shared -o libH5Zblosc.so H5Zblosc.o \
+		   libblosc.a -lz
+		  
+H5Zblosc.o: libblosc.a
+	$(CC) $(PGK_CFLAGS) $(PKG_CPICFLAGS) -c -o H5Zblosc.o H5Zblosc.c \
+	      $(PKG_CPPFLAGS) -I./lib/blosc-1.16.3
 
 libblosc.a:  blosc
 	rm -f libblosc.a

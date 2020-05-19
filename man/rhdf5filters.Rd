@@ -3,7 +3,8 @@
 \docType{package}
 \name{rhdf5filters}
 \alias{rhdf5filters}
-\title{rhdf5filters: Filters etc}
+\title{rhdf5filters}
 \description{
-This package provides compiled versions of various HDF5 filters
+This package provides several HDF5 compression filters for use with rhdf5 
+or other tools using HDF5.
 }
